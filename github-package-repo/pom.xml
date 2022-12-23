@@ -17,6 +17,14 @@
 		<junit-addons.version>1.4</junit-addons.version>
 	</properties>
 
+	<distributionManagement>
+		<repository>
+			<id>github</id>
+			<name>GitHub Apache Maven Packages</name>
+			<url>https://maven.pkg.github.com/rmcdouga/github-package-repo</url>
+		</repository>
+	</distributionManagement>
+
 	<dependencies>
 		<dependency>
 			<groupId>com.jcabi</groupId>
