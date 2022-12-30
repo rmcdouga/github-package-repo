@@ -7,7 +7,7 @@ import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.Response;
 
-public class RestClientJerseyImpl {
+public class RestClientJerseyImpl implements RestClient {
 	private static final Client CLIENT = ClientBuilder.newClient();
 	private final WebTarget baseTarget;
 	private final String githubToken;
@@ -17,6 +17,7 @@ public class RestClientJerseyImpl {
 		 this.githubToken = githubToken;
 	}
 	
+	@Override
 	public InputStream get(String path) {
 		Response response = baseTarget.path(path)
 									  .request()

@@ -26,7 +26,7 @@ private static final String TARGET_URL = "/4PointSolutions/WatchedFolderUtils/co
 	private static final String MOCK_GITHUB_TOKEN = "mock_github_token";
 	private static final boolean WIREMOCK_RECORDING = false;	// true tells WIREMOCK to call AEM and record the result
 	private static final boolean SAVE_RESULTS = false;			// true saves the resuts in the actualResults directory
-	private final RestClientJerseyImpl underTest;
+	private final RestClient underTest;
 
 	private RestClientJerseyImplTest(WireMockRuntimeInfo wmRuntimeInfo) {
 		 underTest = new RestClientJerseyImpl("http://localhost:%d".formatted(wmRuntimeInfo.getHttpPort()), MOCK_GITHUB_TOKEN);
