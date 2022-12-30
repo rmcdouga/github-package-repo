@@ -1,0 +1,5 @@
+# Ignore the results files generated from running JUnit tests
+*
+*/
+# Don't ignore this file.
+!.gitignore

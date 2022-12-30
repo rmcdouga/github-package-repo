@@ -1,0 +1,29 @@
+{
+  "id" : "68ec3a73-019e-46ef-a74f-badc1c97e3a1",
+  "name" : "RestClientJerseyImplTest_testGet_Jar_Response.json",
+  "request" : {
+    "url" : "/mock_redirect/58db1000-817d-11ed-896c-a539e6ee4bc7",
+    "method" : "GET"
+  },
+  "response" : {
+    "status" : 200,
+    "bodyFileName" : "watched-folder-poster-0.0.1-20221221.221800-4.jar",
+    "headers" : {
+      "x-amz-request-id" : "33BS2F1BMR5M3V97",
+      "x-amz-id-2" : "tlD8xCFQ1AXh+Xvbe6k0un4dWnaR0hy3x1yPCRyo5EMI+a2H/EEkdPsvRofhOdEX0YKp7bN0oO4Fg0spiPaBgg==",
+      "Content-Type" : "application/java-archive",
+      "Server" : "AmazonS3",
+      "Accept-Ranges" : "bytes",
+      "Via" : "1.1 varnish, 1.1 varnish",
+      "Date" : "Fri, 30 Dec 2022 16:49:28 GMT",
+      "X-Served-By" : "cache-iad-kjyo7100074-IAD, cache-yul12823-YUL",
+      "X-Cache" : "MISS, MISS",
+      "X-Cache-Hits" : "0, 0",
+      "Strict-Transport-Security" : "max-age=31536000",
+      "X-Fastly-Request-ID" : "6ceaaf7858bd0b368207beb41bd60bcfce5c5c8f"
+    }
+  },
+  "uuid" : "68ec3a73-019e-46ef-a74f-badc1c97e3a1",
+  "persistent" : true,
+  "insertionIndex" : 3
+}

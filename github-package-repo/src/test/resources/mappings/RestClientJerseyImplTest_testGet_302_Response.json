@@ -1,0 +1,29 @@
+{
+  "id" : "d32f38f4-1ea1-4b73-8d48-8091b5983a30",
+  "name" : "RestClientJerseyImplTest_testGet_302_Response.json",
+  "request" : {
+    "url" : "/4PointSolutions/WatchedFolderUtils/com/_4point/aem/watchedfolder/watched-folder-poster/0.0.1-SNAPSHOT/watched-folder-poster-0.0.1-20221221.221800-4.jar",
+    "method" : "GET"
+  },
+  "response" : {
+    "status" : 302,
+    "body" : "<a href=\"/mock_redirect/58db1000-817d-11ed-896c-a539e6ee4bc7\">Found</a>.\n\n",
+    "headers" : {
+      "access-control-allow-methods" : "GET, HEAD, OPTIONS",
+      "Access-Control-Allow-Origin" : "*",
+      "Content-Security-Policy" : "default-src 'none';",
+      "Content-Type" : "text/html; charset=utf-8",
+      "Location" : "/mock_redirect/58db1000-817d-11ed-896c-a539e6ee4bc7",
+      "Server" : "GitHub Registry",
+      "Strict-Transport-Security" : "max-age=31536000;",
+      "X-Content-Type-Options" : "nosniff",
+      "X-Frame-Options" : "DENY",
+      "X-XSS-Protection" : "1; mode=block",
+      "Date" : "Fri, 30 Dec 2022 16:47:47 GMT",
+      "X-GitHub-Request-Id" : "E2B6:5C26:57B33B:8EDADE:63AF1633"
+    }
+  },
+  "uuid" : "d32f38f4-1ea1-4b73-8d48-8091b5983a30",
+  "persistent" : true,
+  "insertionIndex" : 1
+}

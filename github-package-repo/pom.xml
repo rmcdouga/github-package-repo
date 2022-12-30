@@ -10,11 +10,17 @@
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		
+		<!-- Project Dependencies -->
 		<jcabi-xml.version>0.27.0</jcabi-xml.version>
+		<jersey.version>3.1.0</jersey.version>
+
+		<!-- Testing Dependencies -->
 		<junit.version>5.9.1</junit.version>
 		<mockito.version>4.8.0</mockito.version>
 		<hamcrest.version>2.2</hamcrest.version>
 		<junit-addons.version>1.4</junit-addons.version>
+		<wiremock.version>2.35.0</wiremock.version>
 	</properties>
 
 	<distributionManagement>
@@ -31,6 +37,18 @@
 			<artifactId>jcabi-xml</artifactId>
 			<version>${jcabi-xml.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.core</groupId>
+			<artifactId>jersey-client</artifactId>
+			<version>${jersey.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.inject</groupId>
+			<artifactId>jersey-hk2</artifactId>
+			<version>${jersey.version}</version>
+		</dependency>		
+
+		<!-- Test Dependecies -->
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter</artifactId>
@@ -76,6 +94,12 @@
 			<groupId>org.hamcrest</groupId>
 			<artifactId>hamcrest-library</artifactId>
 			<version>${hamcrest.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.github.tomakehurst</groupId>
+			<artifactId>wiremock-jre8</artifactId>
+			<version>${wiremock.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

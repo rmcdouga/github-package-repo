@@ -6,5 +6,6 @@ public class TestUtils {
 	
 	public static final Path RESOURCES_DIR = Path.of("src", "test", "resources");
 	public static final Path SAMPLE_FILES_DIR = RESOURCES_DIR.resolve("sampleFiles");
+	public static final Path ACTUAL_RESULTS_DIR = RESOURCES_DIR.resolve("actualResults");
 
 }
