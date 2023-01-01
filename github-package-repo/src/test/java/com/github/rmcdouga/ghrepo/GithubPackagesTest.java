@@ -8,6 +8,7 @@ import java.nio.ByteBuffer;
 import java.nio.file.Files;
 
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,6 +41,7 @@ class GithubPackagesTest {
 		this.underTest = new GithubPackages(mockRestClient);
 	}
 
+	@DisplayName("Test GithinPackages.get() method.")
 	@Test
 	void testGet(@Mock InputStream expectedResult) throws Exception {
 		Mockito.when(mockRestClient.get(Mockito.endsWith(METADATA_NAME))).thenReturn(Files.newInputStream(TestUtils.SAMPLE_FILES_DIR.resolve(METADATA_NAME)));
@@ -50,7 +52,11 @@ class GithubPackagesTest {
 		Mockito.verify(mockRestClient).get(EXPECTED_JAR_LOCATION);
 	}
 
+	// This test utilizes credentials from the user's .m2/settings.xml file which must
+	// have a "github" id with a suitable github personal access token.  That token must
+	// have access to the 4PointSolutions WatchedFolderUtils packages.
 	@Tag("Integration")
+	@DisplayName("Integration test - test GithinPackages.get() method.")
 	@Test
 	void testGet() throws Exception {
 		String failureResultsFilename = "GithubPackagesTest_testGet_IntTest_results.txt";
