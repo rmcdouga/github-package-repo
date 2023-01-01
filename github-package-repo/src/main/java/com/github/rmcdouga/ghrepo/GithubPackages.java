@@ -3,6 +3,8 @@ package com.github.rmcdouga.ghrepo;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.CopyOption;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 import com.github.rmcdouga.ghrepo.MavenSettings.Credentials;
@@ -46,21 +48,75 @@ public class GithubPackages {
 		return restClient.get(path + latestJarName);
 	}
 	
-	public Repo repository(String userOrg, String repo) {
+	public Repo repo(String userOrg, String repo) {
 		return new Repo(userOrg, repo);
 	}
 	
 	public class Repo {
-		String userOrg;
-		String repo;
+		private final String userOrg;
+		private final String repo;
 		
 		private Repo(String userOrg, String repo) {
 			this.userOrg = userOrg;
 			this.repo = repo;
 		}
 
-		InputStream get(String groupId, String artifactId, String version) {
-			return null;
+		public InputStream get(String groupId, String artifactId, String versionId) throws IOException {
+			return GithubPackages.this.get(userOrg, repo, groupId, artifactId, versionId);
+		}
+		
+		public Group group(String groupId) {
+			return new Group(groupId);
+		}
+		
+		public class Group {
+			private final String groupId;
+
+			private Group(String groupId) {
+				this.groupId = groupId;
+			}
+			
+			public InputStream get(String artifactId, String versionId) throws IOException {
+				return GithubPackages.this.get(userOrg, repo, groupId, artifactId, versionId);
+			}
+			
+			public Artifact artifact(String artifactId) {
+				return new Artifact(artifactId);
+			}
+			
+			public class Artifact {
+				private String artifactId;
+
+				private Artifact(String artifactId) {
+					this.artifactId = artifactId;
+				}
+
+				public InputStream get(String versionId) throws IOException {
+					return GithubPackages.this.get(userOrg, repo, groupId, artifactId, versionId);
+				}
+				
+				public Version version(String versionId) {
+					return new Version(versionId);
+				}
+				
+				public class Version {
+					private final String versionId;
+
+					private Version(String versionId) {
+						this.versionId = versionId;
+					}
+
+					public InputStream get() throws IOException {
+						return GithubPackages.this.get(userOrg, repo, groupId, artifactId, versionId);
+					}
+					
+					public long copyTo(Path target, CopyOption... options) throws IOException {
+						return Files.copy(get(), target, options);
+					}
+					
+				}
+			}
 		}
 	}
+	
 }
