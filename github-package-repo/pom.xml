@@ -4,17 +4,16 @@
 	<artifactId>github-package-repo</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>GitHub Package Repository Library</name>
-
 	<properties>
 		<java.version>17</java.version>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		
+		<!-- Plugin Dependencies -->
+		<maven-surefire-plugin.version>3.0.0-M7</maven-surefire-plugin.version>
 		<!-- Project Dependencies -->
 		<jcabi-xml.version>0.27.0</jcabi-xml.version>
 		<jersey.version>3.1.0</jersey.version>
-
 		<!-- Testing Dependencies -->
 		<junit.version>5.9.1</junit.version>
 		<mockito.version>4.8.0</mockito.version>
@@ -22,7 +21,6 @@
 		<junit-addons.version>1.4</junit-addons.version>
 		<wiremock.version>2.35.0</wiremock.version>
 	</properties>
-
 	<distributionManagement>
 		<repository>
 			<id>github</id>
@@ -30,7 +28,18 @@
 			<url>https://maven.pkg.github.com/rmcdouga/github-package-repo</url>
 		</repository>
 	</distributionManagement>
-
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${maven-surefire-plugin.version}</version>
+				<configuration>
+					<excludedGroups>Integration</excludedGroups>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 	<dependencies>
 		<dependency>
 			<groupId>com.jcabi</groupId>
@@ -46,8 +55,7 @@
 			<groupId>org.glassfish.jersey.inject</groupId>
 			<artifactId>jersey-hk2</artifactId>
 			<version>${jersey.version}</version>
-		</dependency>		
-
+		</dependency>
 		<!-- Test Dependecies -->
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
