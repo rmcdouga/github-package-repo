@@ -93,9 +93,9 @@ class GithubPackagesTest {
 	}
 
 	@Tag("Integration")
-	@DisplayName("Integration test - test GithinPackages.fluent copyTo method.")
+	@DisplayName("Integration test - test GithinPackages.fluent copyTo file method.")
 	@Test
-	void testCopyTo(@TempDir Path tempDir) throws Exception {
+	void testCopyToFile(@TempDir Path tempDir) throws Exception {
 		Path resultsFilename = tempDir.resolve("GithubPackagesTest_testCopyTo_IntTest_results.txt");
 		GithubPackages.create()
 					  .repo(USER_ORG_ID, REPO)
@@ -105,6 +105,21 @@ class GithubPackagesTest {
 					  .copyTo(resultsFilename);
 		assertTrue(Files.exists(resultsFilename), "Expecte '" + resultsFilename + "' to exist but it does not.");
 		assertTrue(isArchive(Files.readAllBytes(resultsFilename)), "Expected response to be a .zip/.jar but is was not. Results written to actualResults directory.");
+	}
+
+	@Tag("Integration")
+	@DisplayName("Integration test - test GithinPackages.fluent copyTo directory method.")
+	@Test
+	void testCopyToDir(@TempDir Path tempDir) throws Exception {
+		Path expectedResultsFilename = tempDir.resolve("%s-%s.jar".formatted(ARTIFACT_ID, VERSION));
+		GithubPackages.create()
+					  .repo(USER_ORG_ID, REPO)
+					  .group(GROUP_ID)
+					  .artifact(ARTIFACT_ID)
+					  .version(VERSION)
+					  .copyTo(tempDir);
+		assertTrue(Files.exists(expectedResultsFilename), "Expecte '" + expectedResultsFilename + "' to exist but it does not.");
+		assertTrue(isArchive(Files.readAllBytes(expectedResultsFilename)), "Expected response to be a .zip/.jar but is was not. Results written to actualResults directory.");
 	}
 
 	private static boolean isArchive(byte[] bytes) {

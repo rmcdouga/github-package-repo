@@ -39,13 +39,21 @@ public class GithubPackages {
 	
 	
 	public InputStream get(String userOrg, String repo, String groupId, String artifactId, String version) throws IOException {
+		return internalGet(userOrg, repo, groupId, artifactId, version).resultStream();
+	}
+
+	private static record GetResult(InputStream resultStream, String jarName) {} ;
+
+	private GetResult internalGet(String userOrg, String repo, String groupId, String artifactId, String version)
+			throws IOException {
 		String path = "/%s/%s/%s/%s/%s/".formatted(userOrg, repo, groupId.replace('.', '/'), artifactId, version);
 		// Get the Maven Metadata first
 		byte[] metadataBytes = restClient.get(path + "maven-metadata.xml").readAllBytes();
 		// Determine the latest version
-		String latestJarName = MavenMetadata.from(metadataBytes).getLatestJarName();
+		MavenMetadata mavenMetadata = MavenMetadata.from(metadataBytes);
+		String latestJarName = mavenMetadata.getLatestJarName();
 		// Get the latest version
-		return restClient.get(path + latestJarName);
+		return new GetResult(restClient.get(path + latestJarName), mavenMetadata.getSnapshotName());
 	}
 	
 	public Repo repo(String userOrg, String repo) {
@@ -110,8 +118,13 @@ public class GithubPackages {
 						return GithubPackages.this.get(userOrg, repo, groupId, artifactId, versionId);
 					}
 					
-					public long copyTo(Path target, CopyOption... options) throws IOException {
-						return Files.copy(get(), target, options);
+					public long copyTo(final Path target, CopyOption... options) throws IOException {
+						if (Files.exists(target) && Files.isDirectory(target)) {
+							GetResult getResult = GithubPackages.this.internalGet(userOrg, repo, groupId, artifactId, versionId);
+							return Files.copy(getResult.resultStream(), target.resolve(getResult.jarName()), options);
+						} else {
+							return Files.copy(get(), target, options);
+						}
 					}
 					
 				}
