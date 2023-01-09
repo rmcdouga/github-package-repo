@@ -9,10 +9,11 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
 class MavenMetadataTest {
+	private static final String ARTIFACT_ID = "watched-f older-poster";
 	
 	enum TestScenario {
-		scenario1("maven-metadata.xml", "watched-folder-poster-0.0.1-20221221.221800-4.jar", "watched-folder-poster-0.0.1-SNAPSHOT.jar"),
-		scenario2("maven-metadata_2.xml", "watched-folder-poster-0.0.1-SNAPSHOT.jar", "watched-folder-poster-0.0.1-SNAPSHOT.jar")
+		scenario1("maven-metadata.xml", ARTIFACT_ID + "-0.0.1-20221221.221800-4.jar", ARTIFACT_ID + "-0.0.1-SNAPSHOT.jar"),
+		scenario2("maven-metadata_2.xml", ARTIFACT_ID + "-0.0.1-SNAPSHOT.jar", ARTIFACT_ID + "-0.0.1-SNAPSHOT.jar")
 		;
 		
 		final MavenMetadata underTest;
@@ -34,13 +35,13 @@ class MavenMetadataTest {
 	@ParameterizedTest
 	@EnumSource
 	void testGetLatestJarName(TestScenario scenario) {
-		assertEquals(scenario.expectedGetLatestJarNameResult, scenario.underTest.getLatestJarName());
+		assertEquals(scenario.expectedGetLatestJarNameResult, scenario.underTest.getLatestJarName(ARTIFACT_ID));
 	}
 
 	@ParameterizedTest
 	@EnumSource
 	void testGetSnapshotName(TestScenario scenario) {
-		assertEquals(scenario.expectedGetSnapshotNameResult, scenario.underTest.getSnapshotName());
+		assertEquals(scenario.expectedGetSnapshotNameResult, scenario.underTest.getSnapshotName(ARTIFACT_ID));
 	}
 
 }

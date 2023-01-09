@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -118,6 +119,25 @@ class GithubPackagesTest {
 					  .artifact(ARTIFACT_ID)
 					  .version(VERSION)
 					  .copyTo(tempDir);
+		assertTrue(Files.exists(expectedResultsFilename), "Expecte '" + expectedResultsFilename + "' to exist but it does not.");
+		assertTrue(isArchive(Files.readAllBytes(expectedResultsFilename)), "Expected response to be a .zip/.jar but is was not. Results written to actualResults directory.");
+	}
+
+	@Tag("Integration")
+	@DisplayName("Integration test - test GithinPackages.fluent copyTo directory method with other repositories.")
+	@ParameterizedTest
+	@CsvSource(value = {
+			"4PointSolutions,FluentFormsAPI,com._4point.aem,fluentforms.core,0.0.2-SNAPSHOT",
+			"4PointSolutions,FluentFormsAPI,com._4point.aem.docservices,rest-services.client,0.0.2-SNAPSHOT"
+	})
+	void testCopyToDirOtherRepos(String userOrg, String repo, String groupId, String artifactId, String version, @TempDir Path tempDir) throws Exception {
+		Path expectedResultsFilename = tempDir.resolve("%s-%s.jar".formatted(artifactId, version));
+		GithubPackages.create()
+					  .repo(userOrg, repo)
+					  .group(groupId)
+					  .artifact(artifactId)
+					  .version(version)
+					  .copyTo(tempDir.resolve(expectedResultsFilename));
 		assertTrue(Files.exists(expectedResultsFilename), "Expecte '" + expectedResultsFilename + "' to exist but it does not.");
 		assertTrue(isArchive(Files.readAllBytes(expectedResultsFilename)), "Expected response to be a .zip/.jar but is was not. Results written to actualResults directory.");
 	}

@@ -10,10 +10,17 @@ import java.nio.file.Path;
 import com.github.rmcdouga.ghrepo.MavenSettings.Credentials;
 
 public class GithubPackages {
-	RestClient restClient;
-	
-	GithubPackages(RestClient restClient) {
+	private final RestClient restClient;
+	private final boolean verboseMode;
+
+	private GithubPackages(RestClient restClient, boolean verboseMode) {
 		this.restClient = restClient;
+		this.verboseMode = verboseMode;
+	}
+
+	// package visibility for unit tests.
+	GithubPackages(RestClient restClient) {
+		this(restClient, false);
 	}
 
 	public static GithubPackages withToken(String githubToken) {
@@ -37,6 +44,9 @@ public class GithubPackages {
 		return withServerId("github");
 	}
 	
+	public GithubPackages verboseMode(boolean verboseMode) {
+		return new GithubPackages(restClient, verboseMode);
+	}
 	
 	public InputStream get(String userOrg, String repo, String groupId, String artifactId, String version) throws IOException {
 		return internalGet(userOrg, repo, groupId, artifactId, version).resultStream();
@@ -51,11 +61,12 @@ public class GithubPackages {
 		byte[] metadataBytes = restClient.get(path + "maven-metadata.xml").readAllBytes();
 		// Determine the latest version
 		MavenMetadata mavenMetadata = MavenMetadata.from(metadataBytes);
-		String latestJarName = mavenMetadata.getLatestJarName();
+		String latestJarName = mavenMetadata.getLatestJarName(artifactId);
 		// Get the latest version
-		return new GetResult(restClient.get(path + latestJarName), mavenMetadata.getSnapshotName());
+		return new GetResult(restClient.get(path + latestJarName), mavenMetadata.getSnapshotName(artifactId));
 	}
 	
+
 	public Repo repo(String userOrg, String repo) {
 		return new Repo(userOrg, repo);
 	}
@@ -118,13 +129,21 @@ public class GithubPackages {
 						return GithubPackages.this.get(userOrg, repo, groupId, artifactId, versionId);
 					}
 					
-					public long copyTo(final Path target, CopyOption... options) throws IOException {
+					public long copyTo(final Path target, final CopyOption... options) throws IOException {
 						if (Files.exists(target) && Files.isDirectory(target)) {
 							GetResult getResult = GithubPackages.this.internalGet(userOrg, repo, groupId, artifactId, versionId);
-							return Files.copy(getResult.resultStream(), target.resolve(getResult.jarName()), options);
+							return copy(getResult.resultStream(), target.resolve(getResult.jarName()), options);
 						} else {
-							return Files.copy(get(), target, options);
+							InputStream in = get();
+							return copy(in, target, options);
 						}
+					}
+
+					private long copy(final InputStream in, final Path target, final CopyOption... options) throws IOException {
+						if (verboseMode) {
+							System.out.println("Copying to '" + target.toString() + "'.");
+						}
+						return Files.copy(in, target, options);
 					}
 					
 				}

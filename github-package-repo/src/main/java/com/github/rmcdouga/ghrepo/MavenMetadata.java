@@ -16,22 +16,22 @@ public class MavenMetadata {
 		this.xml = xml;
 	}
 
-	public String getLatestJarName() {
-		return "%s-%s.jar".formatted(artifactId(), latestVersion().or(this::lastSnapshotVersion).orElseThrow());// TODO: Validate use of .or()
+	public String getLatestJarName(String artifactId) {
+		return "%s-%s.jar".formatted(artifactId, latestVersion().or(this::lastSnapshotVersion).orElseThrow());// TODO: Validate use of .or()
 	}
 	
-	public String getSnapshotName() {
-		return "%s-%s.jar".formatted(artifactId(), latestVersion().or(this::version).orElseThrow());
+	public String getSnapshotName(String artifactId) {
+		return "%s-%s.jar".formatted(artifactId, latestVersion().or(this::version).orElseThrow());
 	}
 	
 	public static MavenMetadata from(byte[] xml) {
 		return new MavenMetadata(new XMLDocument(xml));
 	}
 	
-	private String artifactId() {
-		return xml.xpath(METADATA_TAG + "artifactId/text()").get(0);
-	}
-	
+//	private String artifactId() {
+//		return xml.xpath(METADATA_TAG + "artifactId/text()").get(0);
+//	}
+//	
 	private Optional<String> version() {
 		List<String> version_results = xml.xpath(METADATA_TAG + "version/text()");
 		return version_results.size() > 0 ? Optional.of(version_results.get(0))
