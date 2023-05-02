@@ -1,6 +1,7 @@
 package com.github.rmcdouga.ghrepo;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import com.jcabi.xml.XML;
@@ -17,11 +18,13 @@ public class MavenMetadata {
 	}
 
 	public String getLatestJarName(String artifactId) {
-		return "%s-%s.jar".formatted(artifactId, latestVersion().or(this::lastSnapshotVersion).orElseThrow());// TODO: Validate use of .or()
+		return "%s-%s.jar".formatted(artifactId, latestVersion().or(this::lastSnapshotVersion)
+																.orElseThrow(()->new NoSuchElementException("Unable to locate latest .jar name (%s) in XML (%s)".formatted(artifactId, xml.toString()))));
 	}
 	
 	public String getSnapshotName(String artifactId) {
-		return "%s-%s.jar".formatted(artifactId, latestVersion().or(this::version).orElseThrow());
+		return "%s-%s.jar".formatted(artifactId, latestVersion().or(this::version)
+																.orElseThrow(()->new NoSuchElementException("Unable to locate snapshot name (%s) in XML (%s)".formatted(artifactId, xml.toString()))));
 	}
 	
 	public static MavenMetadata from(byte[] xml) {

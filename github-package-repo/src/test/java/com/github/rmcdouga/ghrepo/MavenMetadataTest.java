@@ -1,10 +1,14 @@
 package com.github.rmcdouga.ghrepo;
 
+import static org.hamcrest.MatcherAssert.assertThat; 
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.NoSuchElementException;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
@@ -44,4 +48,25 @@ class MavenMetadataTest {
 		assertEquals(scenario.expectedGetSnapshotNameResult, scenario.underTest.getSnapshotName(ARTIFACT_ID));
 	}
 
+	@Test
+	void testGetLatestJarName_Failure() {
+		String sampleXml = "<root/>";
+		var underTest = MavenMetadata.from(sampleXml.getBytes());
+		NoSuchElementException ex = assertThrows(NoSuchElementException.class, ()->underTest.getLatestJarName(ARTIFACT_ID));
+		String msg = ex.getMessage();
+		
+		assertNotNull(msg);
+		assertThat(msg, allOf(containsString(sampleXml), containsString(ARTIFACT_ID), containsString("Unable to locate latest .jar name")));
+	}
+
+	@Test
+	void testGetSnapshotName_Failure() {
+		String sampleXml = "<root/>";
+		var underTest = MavenMetadata.from(sampleXml.getBytes());
+		NoSuchElementException ex = assertThrows(NoSuchElementException.class, ()->underTest.getSnapshotName(ARTIFACT_ID));
+		String msg = ex.getMessage();
+		
+		assertNotNull(msg);
+		assertThat(msg, allOf(containsString(sampleXml), containsString(ARTIFACT_ID), containsString("Unable to locate snapshot name")));
+	}
 }
