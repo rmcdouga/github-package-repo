@@ -8,7 +8,7 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 
 public class MavenSettings {
-	static record Credentials(String username, String password) {}
+	public static record Credentials(String username, String password) {}
 	
 	private final XML xml;
 	
