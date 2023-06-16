@@ -42,11 +42,6 @@
 	</build>
 	<dependencies>
 		<dependency>
-			<groupId>com.jcabi</groupId>
-			<artifactId>jcabi-xml</artifactId>
-			<version>${jcabi-xml.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>org.glassfish.jersey.core</groupId>
 			<artifactId>jersey-client</artifactId>
 			<version>${jersey.version}</version>

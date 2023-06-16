@@ -13,7 +13,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
 class MavenMetadataTest {
-	private static final String ARTIFACT_ID = "watched-f older-poster";
+	private static final String ARTIFACT_ID = "watched-folder-poster";
 	
 	enum TestScenario {
 		scenario1("maven-metadata.xml", ARTIFACT_ID + "-0.0.1-20221221.221800-4.jar", ARTIFACT_ID + "-0.0.1-SNAPSHOT.jar"),
