@@ -12,7 +12,6 @@
 		<!-- Plugin Dependencies -->
 		<maven-surefire-plugin.version>3.0.0-M7</maven-surefire-plugin.version>
 		<!-- Project Dependencies -->
-		<jcabi-xml.version>0.27.0</jcabi-xml.version>
 		<jersey.version>3.1.0</jersey.version>
 		<!-- Testing Dependencies -->
 		<junit.version>5.9.1</junit.version>
