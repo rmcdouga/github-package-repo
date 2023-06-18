@@ -14,6 +14,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 
 class MavenMetadataTest {
 	private static final String ARTIFACT_ID = "watched-folder-poster";
+	private static final String ARTIFACT_EXTENSION_JAR = "jar";
 	
 	enum TestScenario {
 		scenario1("maven-metadata.xml", ARTIFACT_ID + "-0.0.1-20221221.221800-4.jar", ARTIFACT_ID + "-0.0.1-SNAPSHOT.jar"),
@@ -26,7 +27,7 @@ class MavenMetadataTest {
 		
 		private TestScenario(String testFile, String expectedGetLatestJarNameResult, String expectedGetSnapshotNameResult) {
 			try {
-				this.underTest = MavenMetadata.from(Files.readAllBytes(TestUtils.SAMPLE_FILES_DIR.resolve(testFile)));
+				this.underTest = MavenMetadata.from(Files.readAllBytes(TestUtils.SAMPLE_FILES_DIR.resolve(testFile)), ARTIFACT_EXTENSION_JAR);
 			} catch (IOException e) {
 				throw new IllegalStateException(e);
 			}
@@ -39,7 +40,7 @@ class MavenMetadataTest {
 	@ParameterizedTest
 	@EnumSource
 	void testGetLatestJarName(TestScenario scenario) {
-		assertEquals(scenario.expectedGetLatestJarNameResult, scenario.underTest.getLatestJarName(ARTIFACT_ID));
+		assertEquals(scenario.expectedGetLatestJarNameResult, scenario.underTest.getLatestArtifactName(ARTIFACT_ID));
 	}
 
 	@ParameterizedTest
@@ -51,8 +52,8 @@ class MavenMetadataTest {
 	@Test
 	void testGetLatestJarName_Failure() {
 		String sampleXml = "<root/>";
-		var underTest = MavenMetadata.from(sampleXml.getBytes());
-		NoSuchElementException ex = assertThrows(NoSuchElementException.class, ()->underTest.getLatestJarName(ARTIFACT_ID));
+		var underTest = MavenMetadata.from(sampleXml.getBytes(), ARTIFACT_EXTENSION_JAR);
+		NoSuchElementException ex = assertThrows(NoSuchElementException.class, ()->underTest.getLatestArtifactName(ARTIFACT_ID));
 		String msg = ex.getMessage();
 		
 		assertNotNull(msg);
@@ -62,7 +63,7 @@ class MavenMetadataTest {
 	@Test
 	void testGetSnapshotName_Failure() {
 		String sampleXml = "<root/>";
-		var underTest = MavenMetadata.from(sampleXml.getBytes());
+		var underTest = MavenMetadata.from(sampleXml.getBytes(), ARTIFACT_EXTENSION_JAR);
 		NoSuchElementException ex = assertThrows(NoSuchElementException.class, ()->underTest.getSnapshotName(ARTIFACT_ID));
 		String msg = ex.getMessage();
 		

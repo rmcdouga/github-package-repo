@@ -17,7 +17,7 @@ public class MavenMetadata {
 		this.artifactExtension = artifactExtension;
 	}
 
-	public String getLatestJarName(String artifactId) {
+	public String getLatestArtifactName(String artifactId) {
 		return "%s-%s.%s".formatted(artifactId, 
 									latestVersion().or(this::lastSnapshotVersion)
 												   .orElseThrow(()->new NoSuchElementException("Unable to locate latest .%s name (%s) in XML (%s)".formatted(artifactExtension, artifactId, xml.toString()))),
@@ -31,10 +31,6 @@ public class MavenMetadata {
 													.orElseThrow(()->new NoSuchElementException("Unable to locate snapshot name (%s) in XML (%s)".formatted(artifactId, xml.toString()))),
 									 artifactExtension
 									 );
-	}
-	
-	public static MavenMetadata from(byte[] xml) {
-			return from(xml, "jar");
 	}
 	
 	public static MavenMetadata from(byte[] xml, String artifactExtension) {

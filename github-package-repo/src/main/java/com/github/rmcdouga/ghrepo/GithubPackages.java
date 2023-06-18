@@ -60,8 +60,8 @@ public class GithubPackages {
 		// Get the Maven Metadata first
 		byte[] metadataBytes = restClient.get(path + "maven-metadata.xml").readAllBytes();
 		// Determine the latest version
-		MavenMetadata mavenMetadata = MavenMetadata.from(metadataBytes);
-		String latestJarName = mavenMetadata.getLatestJarName(artifactId);
+		MavenMetadata mavenMetadata = MavenMetadata.from(metadataBytes, "jar");
+		String latestJarName = mavenMetadata.getLatestArtifactName(artifactId);
 		// Get the latest version
 		return new GetResult(restClient.get(path + latestJarName), mavenMetadata.getSnapshotName(artifactId));
 	}
