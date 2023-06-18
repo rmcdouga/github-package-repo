@@ -10,25 +10,37 @@ public class MavenMetadata {
 	private final String VERSIONING_LATEST_XPATH = METADATA_TAG + "versioning/latest/text()";
 	private final String VERSION_XPATH = METADATA_TAG + "versioning/snapshotVersions/snapshotVersion/extension[text()='jar']/../value/text()";
 	private final XmlDocument xml;
+	private final String artifactExtension;
 
-	private MavenMetadata(XmlDocument xml) {
+	private MavenMetadata(XmlDocument xml, String artifactExtension) {
 		this.xml = xml;
+		this.artifactExtension = artifactExtension;
 	}
 
 	public String getLatestJarName(String artifactId) {
-		return "%s-%s.jar".formatted(artifactId, latestVersion().or(this::lastSnapshotVersion)
-																.orElseThrow(()->new NoSuchElementException("Unable to locate latest .jar name (%s) in XML (%s)".formatted(artifactId, xml.toString()))));
+		return "%s-%s.%s".formatted(artifactId, 
+									latestVersion().or(this::lastSnapshotVersion)
+												   .orElseThrow(()->new NoSuchElementException("Unable to locate latest .%s name (%s) in XML (%s)".formatted(artifactExtension, artifactId, xml.toString()))),
+									artifactExtension
+									);
 	}
 	
 	public String getSnapshotName(String artifactId) {
-		return "%s-%s.jar".formatted(artifactId, latestVersion().or(this::version)
-																.orElseThrow(()->new NoSuchElementException("Unable to locate snapshot name (%s) in XML (%s)".formatted(artifactId, xml.toString()))));
+		return "%s-%s.%s".formatted(artifactId, 
+									 latestVersion().or(this::version)
+													.orElseThrow(()->new NoSuchElementException("Unable to locate snapshot name (%s) in XML (%s)".formatted(artifactId, xml.toString()))),
+									 artifactExtension
+									 );
 	}
 	
 	public static MavenMetadata from(byte[] xml) {
-			return new MavenMetadata(XmlDocument.create(xml));
+			return from(xml, "jar");
 	}
 	
+	public static MavenMetadata from(byte[] xml, String artifactExtension) {
+		return new MavenMetadata(XmlDocument.create(xml), artifactExtension);
+}
+
 //	private String artifactId() {
 //		return xml.xpath(METADATA_TAG + "artifactId/text()").get(0);
 //	}
