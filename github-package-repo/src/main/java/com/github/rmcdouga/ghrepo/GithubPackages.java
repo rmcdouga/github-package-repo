@@ -10,6 +10,8 @@ import java.nio.file.Path;
 import com.github.rmcdouga.ghrepo.MavenSettings.Credentials;
 
 public class GithubPackages {
+	private static final String DEFAULT_ARTIFACT_EXTENSION = "jar";
+	
 	private final RestClient restClient;
 	private final boolean verboseMode;
 
@@ -48,19 +50,23 @@ public class GithubPackages {
 		return new GithubPackages(restClient, verboseMode);
 	}
 	
-	public InputStream get(String userOrg, String repo, String groupId, String artifactId, String version) throws IOException {
-		return internalGet(userOrg, repo, groupId, artifactId, version).resultStream();
+	public InputStream get(String userOrg, String repo, String groupId, String artifactId, String version, String artifactExtension) throws IOException {
+		return internalGet(userOrg, repo, groupId, artifactId, version, artifactExtension).resultStream();
 	}
 
-	private static record GetResult(InputStream resultStream, String jarName) {} ;
+	public InputStream get(String userOrg, String repo, String groupId, String artifactId, String version) throws IOException {
+		return get(userOrg, repo, groupId, artifactId, version, DEFAULT_ARTIFACT_EXTENSION);
+	}
 
-	private GetResult internalGet(String userOrg, String repo, String groupId, String artifactId, String version)
+	private static record GetResult(InputStream resultStream, String artifactName) {} ;
+
+	private GetResult internalGet(String userOrg, String repo, String groupId, String artifactId, String version, String artifactExtension)
 			throws IOException {
 		String path = "/%s/%s/%s/%s/%s/".formatted(userOrg, repo, groupId.replace('.', '/'), artifactId, version);
 		// Get the Maven Metadata first
 		byte[] metadataBytes = restClient.get(path + "maven-metadata.xml").readAllBytes();
 		// Determine the latest version
-		MavenMetadata mavenMetadata = MavenMetadata.from(metadataBytes, "jar");
+		MavenMetadata mavenMetadata = MavenMetadata.from(metadataBytes, artifactExtension);
 		String latestJarName = mavenMetadata.getLatestArtifactName(artifactId);
 		// Get the latest version
 		return new GetResult(restClient.get(path + latestJarName), mavenMetadata.getSnapshotName(artifactId));
@@ -84,6 +90,10 @@ public class GithubPackages {
 			return GithubPackages.this.get(userOrg, repo, groupId, artifactId, versionId);
 		}
 		
+		public InputStream get(String groupId, String artifactId, String versionId, String artifactExtension) throws IOException {
+			return GithubPackages.this.get(userOrg, repo, groupId, artifactId, versionId, artifactExtension);
+		}
+		
 		public Group group(String groupId) {
 			return new Group(groupId);
 		}
@@ -97,6 +107,10 @@ public class GithubPackages {
 			
 			public InputStream get(String artifactId, String versionId) throws IOException {
 				return GithubPackages.this.get(userOrg, repo, groupId, artifactId, versionId);
+			}
+			
+			public InputStream get(String artifactId, String versionId, String artifactExtension) throws IOException {
+				return GithubPackages.this.get(userOrg, repo, groupId, artifactId, versionId, artifactExtension);
 			}
 			
 			public Artifact artifact(String artifactId) {
@@ -114,6 +128,10 @@ public class GithubPackages {
 					return GithubPackages.this.get(userOrg, repo, groupId, artifactId, versionId);
 				}
 				
+				public InputStream get(String versionId, String artifactExtension) throws IOException {
+					return GithubPackages.this.get(userOrg, repo, groupId, artifactId, versionId, artifactExtension);
+				}
+				
 				public Version version(String versionId) {
 					return new Version(versionId);
 				}
@@ -126,29 +144,52 @@ public class GithubPackages {
 					}
 
 					public InputStream get() throws IOException {
-						return GithubPackages.this.get(userOrg, repo, groupId, artifactId, versionId);
+						return GithubPackages.this.get(userOrg, repo, groupId, artifactId, versionId, DEFAULT_ARTIFACT_EXTENSION);
 					}
 					
-					public long copyTo(final Path target, final CopyOption... options) throws IOException {
-						if (Files.exists(target) && Files.isDirectory(target)) {
-							GetResult getResult = GithubPackages.this.internalGet(userOrg, repo, groupId, artifactId, versionId);
-							return copy(getResult.resultStream(), target.resolve(getResult.jarName()), options);
-						} else {
-							InputStream in = get();
-							return copy(in, target, options);
-						}
+					public InputStream get(String artifactExtension) throws IOException {
+						return GithubPackages.this.get(userOrg, repo, groupId, artifactId, versionId, artifactExtension);
 					}
 
-					private long copy(final InputStream in, final Path target, final CopyOption... options) throws IOException {
-						if (verboseMode) {
-							System.out.println("Copying to '" + target.toString() + "'.");
-						}
-						return Files.copy(in, target, options);
+					public long copyTo(final Path target, final CopyOption... options) throws IOException {
+						return extension(DEFAULT_ARTIFACT_EXTENSION).copyTo(target, options);
+					}
+
+					public Extension extension(String artifactExtension) {
+						return new Extension(artifactExtension);
 					}
 					
+					public class Extension {
+						private final String extension;
+
+						public Extension(String artifactExtension) {
+							this.extension = artifactExtension;
+						}
+						
+						public InputStream get() throws IOException {
+							return GithubPackages.this.get(userOrg, repo, groupId, artifactId, versionId, extension);
+						}
+						
+						public long copyTo(final Path target, final CopyOption... options) throws IOException {
+							if (Files.exists(target) && Files.isDirectory(target)) {
+								GetResult getResult = GithubPackages.this.internalGet(userOrg, repo, groupId, artifactId, versionId, extension);
+								return copy(getResult.resultStream(), target.resolve(getResult.artifactName()), options);
+							} else {
+								InputStream in = get();
+								return copy(in, target, options);
+							}
+						}
+
+						private long copy(final InputStream in, final Path target, final CopyOption... options) throws IOException {
+							if (verboseMode) {
+								System.out.println("Copying to '" + target.toString() + "'.");
+							}
+							return Files.copy(in, target, options);
+						}
+						
+					}
 				}
 			}
 		}
 	}
-	
 }

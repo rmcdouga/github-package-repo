@@ -33,6 +33,7 @@ class GithubPackagesTest {
 	private static final String GROUP_ID = "com._4point.aem.watchedfolder";
 	private static final String ARTIFACT_ID = "watched-folder-poster";
 	private static final String VERSION = "0.0.1-SNAPSHOT";
+	private static final String JAR_EXTENSION = "jar";
 	
 	private static final String EXPECTED_METADATA_LOCATION = "/4PointSolutions/WatchedFolderUtils/com/_4point/aem/watchedfolder/watched-folder-poster/0.0.1-SNAPSHOT/" + METADATA_NAME;
 	private static final String EXPECTED_JAR_LOCATION = "/4PointSolutions/WatchedFolderUtils/com/_4point/aem/watchedfolder/watched-folder-poster/0.0.1-SNAPSHOT/watched-folder-poster-0.0.1-20221221.221800-4.jar";
@@ -72,7 +73,8 @@ class GithubPackagesTest {
 				(ghp)->ghp.repo(USER_ORG_ID, REPO).get(GROUP_ID, ARTIFACT_ID, VERSION),
 				(ghp)->ghp.repo(USER_ORG_ID, REPO).group(GROUP_ID).get(ARTIFACT_ID, VERSION),
 				(ghp)->ghp.repo(USER_ORG_ID, REPO).group(GROUP_ID).artifact(ARTIFACT_ID).get(VERSION),
-				(ghp)->ghp.repo(USER_ORG_ID, REPO).group(GROUP_ID).artifact(ARTIFACT_ID).version(VERSION).get()
+				(ghp)->ghp.repo(USER_ORG_ID, REPO).group(GROUP_ID).artifact(ARTIFACT_ID).version(VERSION).get(),
+				(ghp)->ghp.repo(USER_ORG_ID, REPO).group(GROUP_ID).artifact(ARTIFACT_ID).version(VERSION).extension(JAR_EXTENSION).get()
 				); 
 	}
 	
