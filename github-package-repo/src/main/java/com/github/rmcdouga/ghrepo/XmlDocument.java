@@ -98,7 +98,7 @@ public class XmlDocument {
 
 	@Override
 	public String toString() {
-		return "XmlDocument [xpath=" + xpath + ", document='" + getStringFromDocument(document) + "']";
+		return getStringFromDocument(document);
 	}
 
 	//method to convert Document to String

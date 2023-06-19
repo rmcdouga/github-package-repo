@@ -17,21 +17,22 @@ class MavenMetadataTest {
 	private static final String ARTIFACT_EXTENSION_JAR = "jar";
 	
 	enum TestScenario {
-		scenario1("maven-metadata.xml", ARTIFACT_ID + "-0.0.1-20221221.221800-4.jar", ARTIFACT_ID + "-0.0.1-SNAPSHOT.jar"),
-		scenario2("maven-metadata_2.xml", ARTIFACT_ID + "-0.0.1-SNAPSHOT.jar", ARTIFACT_ID + "-0.0.1-SNAPSHOT.jar")
+		scenario1("maven-metadata.xml", ARTIFACT_ID + "-0.0.1-20221221.221800-4.jar", ARTIFACT_ID + "-0.0.1-SNAPSHOT.jar", "jar"),
+		scenario2("maven-metadata_2.xml", ARTIFACT_ID + "-0.0.1-SNAPSHOT.jar", ARTIFACT_ID + "-0.0.1-SNAPSHOT.jar", "jar"),
+		scenariozip("maven-metadata_zip.xml", ARTIFACT_ID + "-1.0.0-20230616.134656-11.zip", ARTIFACT_ID + "-1.0.0-SNAPSHOT.zip", "zip")
 		;
 		
-		final MavenMetadata underTest;
-		final String expectedGetLatestJarNameResult;
-		final String expectedGetSnapshotNameResult;
+		private final MavenMetadata underTest;
+		private final String expectedGetLatestArtifactNameResult;
+		private final String expectedGetSnapshotNameResult;
 		
-		private TestScenario(String testFile, String expectedGetLatestJarNameResult, String expectedGetSnapshotNameResult) {
+		private TestScenario(String testFile, String expectedGetLatestJarNameResult, String expectedGetSnapshotNameResult, String artifactExtension) {
 			try {
-				this.underTest = MavenMetadata.from(Files.readAllBytes(TestUtils.SAMPLE_FILES_DIR.resolve(testFile)), ARTIFACT_EXTENSION_JAR);
+				this.underTest = MavenMetadata.from(Files.readAllBytes(TestUtils.SAMPLE_FILES_DIR.resolve(testFile)), artifactExtension);
 			} catch (IOException e) {
 				throw new IllegalStateException(e);
 			}
-			this.expectedGetLatestJarNameResult = expectedGetLatestJarNameResult;
+			this.expectedGetLatestArtifactNameResult = expectedGetLatestJarNameResult;
 			this.expectedGetSnapshotNameResult = expectedGetSnapshotNameResult;
 		}
 		
@@ -39,8 +40,8 @@ class MavenMetadataTest {
 	
 	@ParameterizedTest
 	@EnumSource
-	void testGetLatestJarName(TestScenario scenario) {
-		assertEquals(scenario.expectedGetLatestJarNameResult, scenario.underTest.getLatestArtifactName(ARTIFACT_ID));
+	void testGetLatestArtifactName(TestScenario scenario) {
+		assertEquals(scenario.expectedGetLatestArtifactNameResult, scenario.underTest.getLatestArtifactName(ARTIFACT_ID));
 	}
 
 	@ParameterizedTest

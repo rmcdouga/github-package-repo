@@ -8,13 +8,14 @@ import java.util.Optional;
 public class MavenMetadata {
 	private final String METADATA_TAG = "/metadata/";
 	private final String VERSIONING_LATEST_XPATH = METADATA_TAG + "versioning/latest/text()";
-	private final String VERSION_XPATH = METADATA_TAG + "versioning/snapshotVersions/snapshotVersion/extension[text()='jar']/../value/text()";
 	private final XmlDocument xml;
 	private final String artifactExtension;
+	private final String versionXPath;
 
 	private MavenMetadata(XmlDocument xml, String artifactExtension) {
 		this.xml = xml;
 		this.artifactExtension = artifactExtension;
+		this.versionXPath = METADATA_TAG + "versioning/snapshotVersions/snapshotVersion/extension[text()='" + artifactExtension + "']/../value/text()";
 	}
 
 	public String getLatestArtifactName(String artifactId) {
@@ -54,7 +55,7 @@ public class MavenMetadata {
 	}
 
 	private Optional<String> lastSnapshotVersion() {
-		List<String> version_results = xml.getStrings(VERSION_XPATH);
+		List<String> version_results = xml.getStrings(this.versionXPath);
 		return version_results.size() > 0 ?  Optional.of(version_results.get(version_results.size()-1)) 
 										  : Optional.empty();
 	}
