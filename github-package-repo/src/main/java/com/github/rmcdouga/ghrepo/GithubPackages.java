@@ -3,11 +3,13 @@ package com.github.rmcdouga.ghrepo;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
 import com.github.rmcdouga.ghrepo.MavenSettings.Credentials;
+import com.github.rmcdouga.ghrepo.XmlDocument.XmlDocumentException;
 
 public class GithubPackages {
 	private static final String DEFAULT_ARTIFACT_EXTENSION = "jar";
@@ -65,11 +67,16 @@ public class GithubPackages {
 		String path = "/%s/%s/%s/%s/%s/".formatted(userOrg, repo, groupId.replace('.', '/'), artifactId, version);
 		// Get the Maven Metadata first
 		byte[] metadataBytes = restClient.get(path + "maven-metadata.xml").readAllBytes();
-		// Determine the latest version
-		MavenMetadata mavenMetadata = MavenMetadata.from(metadataBytes, artifactExtension);
-		String latestJarName = mavenMetadata.getLatestArtifactName(artifactId);
-		// Get the latest version
-		return new GetResult(restClient.get(path + latestJarName), mavenMetadata.getSnapshotName(artifactId));
+		try {
+			// Determine the latest version
+			MavenMetadata mavenMetadata = MavenMetadata.from(metadataBytes, artifactExtension);
+			String latestJarName = mavenMetadata.getLatestArtifactName(artifactId);
+			// Get the latest version
+			return new GetResult(restClient.get(path + latestJarName), mavenMetadata.getSnapshotName(artifactId));
+		} catch (XmlDocumentException e) {
+			String metaDataXml = new String(metadataBytes, StandardCharsets.UTF_8);
+			throw new XmlDocumentException("Error parsing Metadata, Xml=''.".formatted(metaDataXml), e);
+		}
 	}
 	
 
