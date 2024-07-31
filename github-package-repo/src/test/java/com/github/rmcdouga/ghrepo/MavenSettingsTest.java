@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import com.github.rmcdouga.ghrepo.MavenSettings.Credentials;
 
@@ -23,9 +25,10 @@ class MavenSettingsTest {
 		assertThat(credentials.password().length(), greaterThan(0));
 	}
 
-	@Test
-	void testCredentials() throws Exception {
-		MavenSettings underTest = MavenSettings.from(TestUtils.SAMPLE_FILES_DIR.resolve("settings.xml"));
+	@ParameterizedTest
+	@ValueSource(strings = {"settings.xml", "settings_1_2_0.xml"})
+	void testCredentials(String filename) throws Exception {
+		MavenSettings underTest = MavenSettings.from(TestUtils.SAMPLE_FILES_DIR.resolve(filename));
 		
 		Credentials credentials = underTest.credentials("github");
 		
