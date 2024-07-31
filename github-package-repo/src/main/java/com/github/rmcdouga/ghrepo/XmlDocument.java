@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.IntStream;
 
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -26,6 +28,8 @@ import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
@@ -43,7 +47,7 @@ public class XmlDocument {
 		}
 	}
 
-    public static XmlDocument create(Path file) throws XmlDocumentException {
+	public static XmlDocument create(Path file) throws XmlDocumentException {
     	return builder(file).build();
     }
 
@@ -155,6 +159,7 @@ public class XmlDocument {
 	public static class XmlDocumentBuilder {
 		private final InputStream is;
 		private final List<Namespace> namespaces = new ArrayList<>();
+		private String defaultNamespacePrefix = null;
 
 		public XmlDocumentBuilder(InputStream is) {
 			this.is = is;
@@ -166,16 +171,45 @@ public class XmlDocument {
 			return this;
 		}
 		
+		public XmlDocumentBuilder defaultNsPrefix(String nsPrefix) {
+			defaultNamespacePrefix = nsPrefix;
+			return this;
+		}
+
 		public XmlDocument build() {
 	    	try {
 				DocumentBuilderFactory xmlFactory = DocumentBuilderFactory.newInstance();
 				xmlFactory.setNamespaceAware(true);
-				return new XmlDocument(xmlFactory.newDocumentBuilder().parse(is), namespaces);
+				Document document = xmlFactory.newDocumentBuilder().parse(is);
+				if (defaultNamespacePrefix != null) {
+					namespaces.add(constructDefaultNamespace(document, defaultNamespacePrefix));
+				}
+				return new XmlDocument(document, namespaces);
 			} catch (SAXException | IOException | ParserConfigurationException e) {
 				throw new XmlDocumentException("Error while parsing XmlDocument.", e);
 			}
 		}
 		
+		// Construct a Namespace from the default namespace declared in the document
+		private static Namespace constructDefaultNamespace(Document document, String defaultNamespacePrefix) {
+			String defaultNamespaceUrl = getDefaultNamespace(document).orElseThrow(()->new IllegalStateException("Can't set default namespace to '" + defaultNamespacePrefix + "', no default namespace found."));
+			return new Namespace(defaultNamespacePrefix, defaultNamespaceUrl);
+		}
+
+		// Extracts the default namespace URL out of the document (if there is one)
+		private static Optional<String> getDefaultNamespace(Document document) {
+			return Optional.ofNullable(document.getDocumentElement().getAttributes())
+						   .flatMap(XmlDocumentBuilder::getDefaultNamespaceValue);
+		}
+
+		// get the defaultNamespace URL value from the NamedNodeMap
+		private static Optional<String> getDefaultNamespaceValue(NamedNodeMap attributes) {
+			return IntStream.range(0, attributes.getLength())
+	 			 	  		.<Node>mapToObj(i->attributes.item(i))		// Loop through all the attributes
+	 			 	  		.filter(n->n.getNodeName().equals("xmlns"))	// Remove attributes that are not the default namespace 
+	 			 	  		.map(Node::getNodeValue)					// Get the value
+	 			 	  		.findFirst();
+		}
 	}
 	
 	@SuppressWarnings("serial")
@@ -196,5 +230,4 @@ public class XmlDocument {
 			super(cause);
 		}
     }
-
 }

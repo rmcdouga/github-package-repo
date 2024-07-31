@@ -24,7 +24,7 @@ public class MavenSettings {
 	}
 	
 	public static MavenSettings from(Path settingsFileLocation) throws FileNotFoundException {
-		return new MavenSettings(XmlDocument.builder(settingsFileLocation).registerNs("mvn", "http://maven.apache.org/SETTINGS/1.0.0").build());
+		return new MavenSettings(XmlDocument.builder(settingsFileLocation).defaultNsPrefix("mvn").build());
 	}
 	
 	public static MavenSettings get() throws FileNotFoundException {
