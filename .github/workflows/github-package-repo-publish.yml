@@ -41,7 +41,7 @@ jobs:
         GITHUB_TOKEN: ${{ github.token }}
 
     - name: Publish to GitHub Packages Apache Maven
-      if: (github.ref == 'refs/heads/master' || github.ref == 'refs/tags/*') &&  !matrix.experimental # Only run on main branch or tags and non-experimental
+      if: (github.ref == 'refs/heads/main' || github.ref == 'refs/tags/*') &&  !matrix.experimental # Only run on main branch or tags and non-experimental
       run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml --file github-package-repo/pom.xml
       env:
         GITHUB_TOKEN: ${{ github.token }}
