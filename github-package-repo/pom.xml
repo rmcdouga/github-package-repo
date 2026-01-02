@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.rmcdouga</groupId>
 	<artifactId>github-package-repo</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<name>GitHub Package Repository Library</name>
 	<properties>
 		<java.version>25</java.version>
