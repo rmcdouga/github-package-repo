@@ -19,7 +19,6 @@
 		<junit.version>6.0.1</junit.version>
 		<mockito.version>5.21.0</mockito.version>
 		<hamcrest.version>3.0</hamcrest.version>
-		<junit-addons.version>1.4</junit-addons.version>
 		<wiremock.version>3.13.2</wiremock.version>
 	</properties>
 	<distributionManagement>
@@ -70,32 +69,6 @@
 			<artifactId>mockito-junit-jupiter</artifactId>
 			<version>${mockito.version}</version>
 			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>junit-addons</groupId>
-			<artifactId>junit-addons</artifactId>
-			<version>${junit-addons.version}</version>
-			<scope>test</scope>
-			<exclusions>
-				<exclusion>
-					<!-- Exclude this really old version of junit that
-					junit-addons depends on -->
-					<groupId>junit</groupId>
-					<artifactId>junit</artifactId>
-				</exclusion>
-				<exclusion>
-					<!-- Exclude this really old version of xerces that
-					junit-addons depends on -->
-					<groupId>xerces</groupId>
-					<artifactId>xercesImpl</artifactId>
-				</exclusion>
-				<exclusion>
-					<!-- Exclude this really old version of xerces that
-					junit-addons depends on -->
-					<groupId>xerces</groupId>
-					<artifactId>xmlParserAPIs</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.hamcrest</groupId>
