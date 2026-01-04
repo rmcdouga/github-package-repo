@@ -71,7 +71,7 @@ public class GithubPackages {
 
 	private GetResult getFinal(String artifactId, String version, String artifactExtension, String path) throws IOException {
 		// https://maven.pkg.github.com/4PointSolutions/FluentFormsAPI/com/_4point/aem/fluentforms.core/0.0.3/fluentforms.core-0.0.3.jar
-		return new GetResult(restClient.get("%s%s-%s.%s".formatted(path, artifactId, version, artifactExtension)), artifactId);
+		return new GetResult(restClient.get("%s%s-%s.%s".formatted(path, artifactId, version, artifactExtension)), "%s-%s.%s".formatted(artifactId, version, artifactExtension));
 	}
 
 	private GetResult getSnapshot(String artifactId, String artifactExtension, String path) throws IOException {

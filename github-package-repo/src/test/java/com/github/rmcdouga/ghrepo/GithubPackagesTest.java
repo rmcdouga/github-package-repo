@@ -14,6 +14,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.io.CleanupMode;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -122,7 +123,7 @@ class GithubPackagesTest {
 	@Tag("Integration")
 	@DisplayName("Integration test - test GithinPackages.fluent copyTo file method.")
 	@Test
-	void testCopyToFile(@TempDir Path tempDir) throws Exception {
+	void testCopyToFile(@TempDir(cleanup = CleanupMode.ON_SUCCESS) Path tempDir) throws Exception {
 		Path resultsFilename = tempDir.resolve("GithubPackagesTest_testCopyTo_IntTest_results.txt");
 		GithubPackages.create()
 					  .repo(USER_ORG_ID, REPO)
@@ -131,22 +132,28 @@ class GithubPackagesTest {
 					  .version(SNAPSHOT_VERSION)
 					  .copyTo(resultsFilename);
 		assertTrue(Files.exists(resultsFilename), "Expected '" + resultsFilename + "' to exist but it does not.");
-		assertTrue(isArchive(Files.readAllBytes(resultsFilename)), "Expected response to be a .zip/.jar but is was not. Results written to actualResults directory.");
+		assertTrue(isArchive(Files.readAllBytes(resultsFilename)), "Expected response to be a .zip/.jar but is was not. Results in '" + resultsFilename + "'.");
 	}
 
 	@Tag("Integration")
 	@DisplayName("Integration test - test GithinPackages.fluent copyTo directory method.")
-	@Test
-	void testCopyToDir(@TempDir Path tempDir) throws Exception {
-		Path expectedResultsFilename = tempDir.resolve("%s-%s.jar".formatted(ARTIFACT_ID, SNAPSHOT_VERSION));
+	@ParameterizedTest
+	@CsvSource(value = {
+			"4PointSolutions,FluentFormsAPI,com._4point.aem,fluentforms.core,0.0.2-SNAPSHOT",
+			"4PointSolutions,FluentFormsAPI,com._4point.aem.docservices,rest-services.client,0.0.2-SNAPSHOT",
+			"4PointSolutions,FluentFormsAPI,com._4point.aem,fluentforms.core,0.0.3",
+			"4PointSolutions,FluentFormsAPI,com._4point.aem.docservices,rest-services.client,0.0.3"
+	})
+	void testCopyToDir(String userOrg, String repo, String groupId, String artifactId, String version, @TempDir(cleanup = CleanupMode.ON_SUCCESS) Path tempDir) throws Exception {
+		Path expectedResultsFilename = tempDir.resolve("%s-%s.jar".formatted(artifactId, version));
 		GithubPackages.create()
-					  .repo(USER_ORG_ID, REPO)
-					  .group(GROUP_ID)
-					  .artifact(ARTIFACT_ID)
-					  .version(SNAPSHOT_VERSION)
+					  .repo(userOrg, repo)
+					  .group(groupId)
+					  .artifact(artifactId)
+					  .version(version)
 					  .copyTo(tempDir);
 		assertTrue(Files.exists(expectedResultsFilename), "Expected '" + expectedResultsFilename + "' to exist but it does not.");
-		assertTrue(isArchive(Files.readAllBytes(expectedResultsFilename)), "Expected response to be a .zip/.jar but is was not. Results written to actualResults directory.");
+		assertTrue(isArchive(Files.readAllBytes(expectedResultsFilename)), "Expected response to be a .zip/.jar but is was not. Results in '" + expectedResultsFilename + "'.");
 	}
 
 	@Tag("Integration")
@@ -158,7 +165,7 @@ class GithubPackagesTest {
 			"4PointSolutions,FluentFormsAPI,com._4point.aem,fluentforms.core,0.0.3",
 			"4PointSolutions,FluentFormsAPI,com._4point.aem.docservices,rest-services.client,0.0.3"
 	})
-	void testCopyToDirOtherRepos(String userOrg, String repo, String groupId, String artifactId, String version, @TempDir Path tempDir) throws Exception {
+	void testCopyToDirOtherRepos(String userOrg, String repo, String groupId, String artifactId, String version, @TempDir(cleanup = CleanupMode.ON_SUCCESS) Path tempDir) throws Exception {
 		Path expectedResultsFilename = tempDir.resolve("%s-%s.jar".formatted(artifactId, version));
 		GithubPackages.create()
 					  .repo(userOrg, repo)
@@ -167,7 +174,7 @@ class GithubPackagesTest {
 					  .version(version)
 					  .copyTo(tempDir.resolve(expectedResultsFilename));
 		assertTrue(Files.exists(expectedResultsFilename), "Expected '" + expectedResultsFilename + "' to exist but it does not.");
-		assertTrue(isArchive(Files.readAllBytes(expectedResultsFilename)), "Expected response to be a .zip/.jar but is was not. Results written to actualResults directory.");
+		assertTrue(isArchive(Files.readAllBytes(expectedResultsFilename)), "Expected response to be a .zip/.jar but is was not. Results in '" + expectedResultsFilename + "'.");
 	}
 
 	private static boolean isArchive(byte[] bytes) {
