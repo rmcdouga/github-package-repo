@@ -6,6 +6,27 @@
 	<artifactId>github-package-repo</artifactId>
 	<version>0.0.2-SNAPSHOT</version>
 	<name>GitHub Package Repository Library</name>
+	<description>A library for downloading .jars from GitHub Package Repositories.</description>
+	<url>https://github.com/rmcdouga/github-package-repo</url>
+
+	<licenses>
+		<license>
+			<name>The Apache License, Version 2.0</name>
+			<url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+		</license>
+	</licenses>
+
+	<organization>
+		<name>Rob McDougall</name>
+		<url>https://github.com/rmcdouga</url>
+	</organization>
+	<developers>
+		<developer>
+			<name>Rob McDougall</name>
+			<email>rmcdouga@gmail.com</email>
+		</developer>
+	</developers>
+
 	<properties>
 		<java.version>25</java.version>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
@@ -21,13 +42,27 @@
 		<hamcrest.version>3.0</hamcrest.version>
 		<wiremock.version>3.13.2</wiremock.version>
 	</properties>
+
 	<distributionManagement>
+		<snapshotRepository>
+			<id>github</id>
+			<name>GitHub Apache Maven Packages</name>
+			<url>https://maven.pkg.github.com/rmcdouga/github-package-repo</url>
+		</snapshotRepository>
 		<repository>
 			<id>github</id>
 			<name>GitHub Apache Maven Packages</name>
 			<url>https://maven.pkg.github.com/rmcdouga/github-package-repo</url>
 		</repository>
 	</distributionManagement>
+
+	<scm>
+		<connection>scm:git:https://github.com/rmcdouga/github-package-repo.git</connection>
+		<developerConnection>scm:git:https://github.com/rmcdouga/github-package-repo.git</developerConnection>
+		<url>https://github.com/rmcdouga/github-package-repo</url>
+	</scm>
+
+
 	<build>
 		<plugins>
 			<plugin>
