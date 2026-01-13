@@ -56,10 +56,8 @@ jobs:
       continue-on-error: true # Job continues even if this step fails
 
     - name: Display JReleaser trace
-      if: always()
-      run: cat target\jreleaser\trace.log
+      run: cat target/jreleaser/trace.log
         
     - name: Display JReleaser properties
-      if: always()
-      run: cat target\jreleaser\output.properties
+      run: cat target/jreleaser/output.properties
         
