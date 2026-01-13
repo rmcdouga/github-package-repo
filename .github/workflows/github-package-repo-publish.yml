@@ -55,9 +55,9 @@ jobs:
         JRELEASER_NEXUS2_PASSWORD: ${{ secrets.JRELEASER_MAVENCENTRAL_PASSWORD }}
       continue-on-error: true # Job continues even if this step fails
 
-    - name: Display JReleaser trace
-      run: cat target/jreleaser/trace.log
-        
     - name: Display JReleaser properties
-      run: cat target/jreleaser/output.properties
+      run: cat github-package-repo/target/jreleaser/output.properties
+        
+    - name: Display JReleaser trace
+      run: cat github-package-repo/target/jreleaser/trace.log
         
