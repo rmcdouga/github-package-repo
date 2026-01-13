@@ -207,7 +207,7 @@
 						<inherited>false</inherited>
 						<configuration>
 							<gitRootSearch>true</gitRootSearch>
-							<dryrun>true</dryrun>
+							<dryrun>false</dryrun>
 							<jreleaser>
 								<release>
 									<github>
