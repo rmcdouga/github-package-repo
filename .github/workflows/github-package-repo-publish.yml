@@ -42,7 +42,7 @@ jobs:
 
     - name: Publish to GitHub Packages Apache Maven
       if: (github.ref == 'refs/heads/main' || github.ref == 'refs/tags/*') &&  !matrix.experimental # Only run on main branch or tags and non-experimental
-      run: mvn deploy jreleaser:full-release -P publication,release -s $GITHUB_WORKSPACE/settings.xml --file github-package-repo/pom.xml
+      run: mvn -B deploy jreleaser:full-release -P publication,release -s $GITHUB_WORKSPACE/settings.xml --file github-package-repo/pom.xml
       env:
         GITHUB_TOKEN: ${{ github.token }}
         JRELEASER_GITHUB_TOKEN: ${{ github.token }}

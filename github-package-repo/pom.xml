@@ -256,7 +256,9 @@
 												<snapshotSupported>true</snapshotSupported>
 												<closeRepository>true</closeRepository>
 												<releaseRepository>false</releaseRepository> <!-- false = requires manual release -->
-												<stagingRepositories>./target/staging-deploy</stagingRepositories>
+												<stagingRepositories>
+													<stagingRepository>./target/staging-deploy</stagingRepository>
+												</stagingRepositories>
 											</snapshot-deploy>
 											<maven-central>
 												<active>RELEASE</active>
