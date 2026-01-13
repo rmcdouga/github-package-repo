@@ -158,7 +158,7 @@
 			<!-- Profile for creating a "full" release for publication (with signed versions of sources and javadocs) -->
 	        <id>publication</id>
  			<properties>
-        	   	<altDeploymentRepository>local::file:./target/staging-deploy</altDeploymentRepository>
+        	   	<altDeploymentRepository>local::file:${project.build.directory}/staging-deploy</altDeploymentRepository>
             </properties>
             <build>
 	            <plugins>
@@ -218,7 +218,7 @@
 								<files>
 									<globs>
 										<glob>
-											<pattern>./target/staging-deploy/**/${project.artifactId}-${project.version}*.*</pattern>
+											<pattern>${project.build.directory}/staging-deploy/**/${project.artifactId}-${project.version}*.*</pattern>
 										</glob>
 									</globs>
 								</files>
@@ -236,7 +236,7 @@
 												<applyMavenCentralRules>false</applyMavenCentralRules>
 												<url>https://maven.pkg.github.com/rmcdouga/github-package-repo</url>
 												<stagingRepositories>
-													<stagingRepository>./target/staging-deploy</stagingRepository>
+													<stagingRepository>${project.build.directory}/staging-deploy</stagingRepository>
 												</stagingRepositories>
 											</githubPackages>
 										</github>
@@ -245,7 +245,7 @@
 												<active>RELEASE</active>
 												<applyMavenCentralRules>true</applyMavenCentralRules>
 												<url>https://central.sonatype.com/api/v1/publisher</url>
-												<stagingRepositories>./target/staging-deploy</stagingRepositories>
+												<stagingRepositories>${project.build.directory}/staging-deploy</stagingRepositories>
 											</release-deploy>
 										</mavenCentral>
 -->										<nexus2>
@@ -257,7 +257,7 @@
 												<closeRepository>true</closeRepository>
 												<releaseRepository>false</releaseRepository> <!-- false = requires manual release -->
 												<stagingRepositories>
-													<stagingRepository>./target/staging-deploy</stagingRepository>
+													<stagingRepository>${project.build.directory}/staging-deploy</stagingRepository>
 												</stagingRepositories>
 											</snapshot-deploy>
 											<maven-central>
@@ -265,7 +265,7 @@
 												<applyMavenCentralRules>true</applyMavenCentralRules>
 												<url>https://s01.oss.sonatype.org/service/local</url>
 												<stagingRepositories>
-													<stagingRepository>./target/staging-deploy</stagingRepository>
+													<stagingRepository>${project.build.directory}/staging-deploy</stagingRepository>
 												</stagingRepositories>
 												<closeRepository>true</closeRepository>
 												<releaseRepository>false</releaseRepository>
