@@ -53,3 +53,13 @@ jobs:
         JRELEASER_DEPLOY_MAVEN_MAVENCENTRAL_RELEASE_DEPLOY_PASSWORD: ${{ secrets.JRELEASER_MAVENCENTRAL_PASSWORD }}
         JRELEASER_NEXUS2_USERNAME: ${{ secrets.JRELEASER_MAVENCENTRAL_USERNAME }}
         JRELEASER_NEXUS2_PASSWORD: ${{ secrets.JRELEASER_MAVENCENTRAL_PASSWORD }}
+      continue-on-error: true # Job continues even if this step fails
+
+    - name: Display JReleaser trace
+      if: always()
+      run: cat target\jreleaser\trace.log
+        
+    - name: Display JReleaser properties
+      if: always()
+      run: cat target\jreleaser\output.properties
+        
