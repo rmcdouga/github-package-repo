@@ -155,8 +155,12 @@
 
 	<profiles>
 	    <profile>
+			<!-- Profile for creating a "full" release for publication (with signed versions of sources and javadocs) -->
 	        <id>publication</id>
-	        <build>
+ 			<properties>
+        	   	<altDeploymentRepository>local::file:./target/staging-deploy</altDeploymentRepository>
+            </properties>
+            <build>
 	            <plugins>
 	                <plugin>
 	                    <groupId>org.apache.maven.plugins</groupId>
@@ -191,6 +195,88 @@
 	            </plugins>
 	        </build>
 	    </profile>
+		<profile>
+			<!-- Profile for releasing code to Maven Central -->
+			<id>release</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.jreleaser</groupId>
+						<artifactId>jreleaser-maven-plugin</artifactId>
+						<version>${jreleaser-plugin.version}</version>
+						<inherited>false</inherited>
+						<configuration>
+							<gitRootSearch>true</gitRootSearch>
+							<dryrun>true</dryrun>
+							<jreleaser>
+								<release>
+									<github>
+										<owner>rmcdouga</owner>
+										<overwrite>true</overwrite>
+									</github>
+								</release>
+								<files>
+									<globs>
+										<glob>
+											<pattern>./target/staging-deploy/**/${project.artifactId}-${project.version}*.*</pattern>
+										</glob>
+									</globs>
+								</files>
+								<signing>
+									<pgp>
+										<active>ALWAYS</active>
+										<armored>true</armored>
+									</pgp>
+								</signing>
+								<deploy>
+									<maven>
+										<github>
+											<githubPackages>
+												<active>ALWAYS</active>
+												<applyMavenCentralRules>false</applyMavenCentralRules>
+												<url>https://maven.pkg.github.com/rmcdouga/github-package-repo</url>
+												<stagingRepositories>
+													<stagingRepository>./target/staging-deploy</stagingRepository>
+												</stagingRepositories>
+											</githubPackages>
+										</github>
+										<!--										<mavenCentral>
+											<release-deploy>
+												<active>RELEASE</active>
+												<applyMavenCentralRules>true</applyMavenCentralRules>
+												<url>https://central.sonatype.com/api/v1/publisher</url>
+												<stagingRepositories>./target/staging-deploy</stagingRepositories>
+											</release-deploy>
+										</mavenCentral>
+-->										<nexus2>
+											<snapshot-deploy>
+												<active>SNAPSHOT</active>
+												<snapshotUrl>https://central.sonatype.com/repository/maven-snapshots/</snapshotUrl>
+												<applyMavenCentralRules>true</applyMavenCentralRules>
+												<snapshotSupported>true</snapshotSupported>
+												<closeRepository>true</closeRepository>
+												<releaseRepository>false</releaseRepository> <!-- false = requires manual release -->
+												<stagingRepositories>./target/staging-deploy</stagingRepositories>
+											</snapshot-deploy>
+											<maven-central>
+												<active>RELEASE</active>
+												<applyMavenCentralRules>true</applyMavenCentralRules>
+												<url>https://s01.oss.sonatype.org/service/local</url>
+												<stagingRepositories>
+													<stagingRepository>./target/staging-deploy</stagingRepository>
+												</stagingRepositories>
+												<closeRepository>true</closeRepository>
+												<releaseRepository>false</releaseRepository>
+											</maven-central>
+										</nexus2>
+									</maven>
+								</deploy>
+							</jreleaser>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 	</profiles>
 
 </project>
