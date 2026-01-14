@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.github.rmcdouga</groupId>
 	<artifactId>github-package-repo</artifactId>
-	<version>0.0.2-SNAPSHOT</version>
+	<version>0.0.3-SNAPSHOT</version>
 	<name>GitHub Package Repository Library</name>
 	<description>A library for downloading .jars from GitHub Package Repositories.</description>
 	<url>https://github.com/rmcdouga/github-package-repo</url>
@@ -230,9 +230,10 @@
 								</signing>
 								<deploy>
 									<maven>
+<!--									
 										<github>
 											<githubPackages>
-												<active>ALWAYS</active>
+												<active>NEVER</active>
 												<applyMavenCentralRules>false</applyMavenCentralRules>
 												<url>https://maven.pkg.github.com/rmcdouga/github-package-repo</url>
 												<stagingRepositories>
@@ -240,7 +241,8 @@
 												</stagingRepositories>
 											</githubPackages>
 										</github>
-										<!--										<mavenCentral>
+-->
+										<mavenCentral>
 											<release-deploy>
 												<active>RELEASE</active>
 												<applyMavenCentralRules>true</applyMavenCentralRules>
@@ -248,14 +250,15 @@
 												<stagingRepositories>${project.build.directory}/staging-deploy</stagingRepositories>
 											</release-deploy>
 										</mavenCentral>
--->										<nexus2>
+<!--
+										<nexus2>
 											<snapshot-deploy>
-												<active>SNAPSHOT</active>
+												<active>NEVER</active>
 												<snapshotUrl>https://central.sonatype.com/repository/maven-snapshots/</snapshotUrl>
 												<applyMavenCentralRules>true</applyMavenCentralRules>
 												<snapshotSupported>true</snapshotSupported>
 												<closeRepository>true</closeRepository>
-												<releaseRepository>false</releaseRepository> <!-- false = requires manual release -->
+												<releaseRepository>false</releaseRepository> 
 												<stagingRepositories>
 													<stagingRepository>${project.build.directory}/staging-deploy</stagingRepository>
 												</stagingRepositories>
@@ -271,6 +274,7 @@
 												<releaseRepository>false</releaseRepository>
 											</maven-central>
 										</nexus2>
+-->
 									</maven>
 								</deploy>
 							</jreleaser>
