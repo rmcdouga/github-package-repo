@@ -56,8 +56,10 @@ jobs:
       continue-on-error: true # Job continues even if this step fails
 
     - name: Display JReleaser properties
+      if: (github.ref == 'refs/heads/main' || github.ref == 'refs/tags/*') &&  !matrix.experimental # Only run on main branch or tags and non-experimental
       run: cat github-package-repo/target/jreleaser/output.properties
         
     - name: Display JReleaser trace
+      if: (github.ref == 'refs/heads/main' || github.ref == 'refs/tags/*') &&  !matrix.experimental # Only run on main branch or tags and non-experimental
       run: cat github-package-repo/target/jreleaser/trace.log
         
