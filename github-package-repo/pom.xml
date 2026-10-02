@@ -43,7 +43,7 @@
 		<jreleaser-plugin.version>1.26.0</jreleaser-plugin.version>
 
 		<!-- Project Dependencies -->
-		<jersey.version>4.0.2</jersey.version>
+		<jersey.version>4.0.3</jersey.version>
 
 		<!-- Testing Dependencies -->
 		<junit.version>6.1.3</junit.version>
